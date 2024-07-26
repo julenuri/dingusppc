@@ -590,6 +590,7 @@ uint32_t AtiMach64Gx::read(uint32_t rgn_start, uint32_t offset, int size)
             return read_mem(&this->vram_ptr[offset], size);
         }
         if (offset >= this->mm_regs_offset && offset < this->mm_regs_offset + 0x400) {
+            //LOG_F(INFO, "ATIMach64 Write: offset=%x, value=%x, size=%x", offset - mm_regs_offset, BYTESWAP_SIZED(value, size), size);
             uint32_t value = read_reg(offset - this->mm_regs_offset, size);
             #if 0
             LOG_F(
@@ -788,6 +789,28 @@ void AtiMach64Gx::crtc_update()
         LOG_F(ERROR, "%s: unsupported pixel format %d", this->name.c_str(), this->pixel_format);
     }
 
+    LOG_F(INFO, "%s: primary CRT controller enabled:", this->name.c_str());
+    LOG_F(
+        INFO,
+        "Video mode: %s",
+        bit_set(this->regs[ATI_CRTC_GEN_CNTL], ATI_CRTC_EXT_DISP_EN) ? "extended" : "VGA");
+    LOG_F(INFO, "Video width: %d px", this->active_width);
+    LOG_F(INFO, "Video height: %d px", this->active_height);
+    verbose_pixel_format(0);
+    //LOG_F(INFO, "VPLL frequency: %f MHz", vpll_freq * 1e-6);
+    LOG_F(INFO, "Pixel (dot) clock: %f MHz", this->pixel_clock * 1e-6);
+    LOG_F(INFO, "Refresh rate: %f Hz", this->refresh_rate);
+    LOG_F(
+        INFO,
+        "Framebuffer offset: %x",
+        extract_bits<uint32_t>(this->regs[ATI_CRTC_OFF_PITCH], ATI_CRTC_OFFSET, ATI_CRTC_OFFSET_size) *
+            8);
+    LOG_F(
+        INFO,
+        "Framebuffer pitch: %x (%x)",
+        new_fb_pitch_reg,
+        fb_pitch);
+
     this->stop_refresh_task();
     this->start_refresh_task();
 
@@ -858,6 +881,7 @@ int AtiMach64Gx::device_postinit()
             0;
 
         LOG_F(WARNING, "%s: irq_line_state:%d do_interrupt:%d CRTC_INT_CNTL:%08x",
+        //LOG_F(WARNING, "%s: irq_line_state:%d do_interrupt:%d CRTC_INT_CNTL:%08x", this->name.c_str(), irq_line_state, do_interrupt, this->regs[ATI_CRTC_INT_CNTL]);
               this->name.c_str(), irq_line_state, do_interrupt,
               this->regs[ATI_CRTC_INT_CNTL]);
 
