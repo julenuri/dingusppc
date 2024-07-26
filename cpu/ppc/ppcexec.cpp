@@ -373,6 +373,8 @@ static void ppc_exec_inner()
 
     max_cycles = 0;
 
+    bool msr_le = (ppc_state.msr & MSR::LE) != 0;
+
     while (power_on) {
         // define boundaries of the next execution block
         // max execution block length = one memory page
@@ -386,6 +388,7 @@ static void ppc_exec_inner()
         // interpret execution block
         while (power_on && ppc_state.pc < eb_end) {
             ppc_main_opcode();
+            msr_le = (ppc_state.msr & MSR::LE) != 0;
             if (g_icycles++ >= max_cycles || exec_timer) {
                 max_cycles = process_events();
             }
