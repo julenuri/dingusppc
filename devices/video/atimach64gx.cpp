@@ -590,7 +590,16 @@ uint32_t AtiMach64Gx::read(uint32_t rgn_start, uint32_t offset, int size)
             return read_mem(&this->vram_ptr[offset], size);
         }
         if (offset >= this->mm_regs_offset && offset < this->mm_regs_offset + 0x400) {
-            return BYTESWAP_SIZED(read_reg(offset - this->mm_regs_offset, size), size);
+            uint32_t value = read_reg(offset - this->mm_regs_offset, size);
+            #if 0
+            LOG_F(
+                INFO,
+                "ATIMach64 Read: offset=%x, value=%x, size=%x",
+                offset - mm_regs_offset,
+                BYTESWAP_SIZED(value, size),
+                size);
+            #endif
+            return BYTESWAP_SIZED(value, size);
         }
         return 0;
     }
@@ -702,8 +711,12 @@ void AtiMach64Gx::crtc_update()
 
     static uint8_t bits_per_pixel[8] = {0, 0, 4, 8, 16, 24, 32, 0};
 
-    int new_fb_pitch = extract_bits<uint32_t>(this->regs[ATI_CRTC_OFF_PITCH],
-        ATI_CRTC_PITCH, ATI_CRTC_PITCH_size) * bits_per_pixel[this->pixel_format];
+    int new_fb_pitch_reg = extract_bits<uint32_t>(this->regs[ATI_CRTC_OFF_PITCH], ATI_CRTC_PITCH, ATI_CRTC_PITCH_size);
+    // HACK: should not be zero!
+    if (new_fb_pitch_reg == 0) {
+        new_fb_pitch_reg = active_width / 8; // "Display pitch in pixels * 8"
+    }
+    int new_fb_pitch = new_fb_pitch_reg * bits_per_pixel[this->pixel_format];
     if (new_fb_pitch != this->fb_pitch) {
         this->fb_pitch = new_fb_pitch;
         need_recalc = true;
