@@ -154,7 +154,9 @@ bool MemCtrlBase::add_mem_region(uint32_t start_addr, uint32_t size,
     if (!is_range_free(start_addr, size))
         return false;
 
-    uint8_t* reg_content = new uint8_t[size](); // allocate and clear to zero
+    // allocate 64-bits aligned in host memory.
+    uint8_t* reg_content = new uint8_t[size + 8]();    // allocate and clear to zero
+    size_t align_val = (size_t)reg_content & 0x7;
 
     this->mem_regions.push_back(reg_content);
 
@@ -167,6 +169,10 @@ bool MemCtrlBase::add_mem_region(uint32_t start_addr, uint32_t size,
     entry->type    = type;
     entry->devobj  = nullptr;
     entry->mem_ptr = reg_content;
+    
+    if (align_val != 0) {
+        reg_content = &reg_content[8 - align_val];
+    }
 
     // Keep address_map sorted, that way the RAM region (which starts at 0 and
     // is most often requested) will be found by find_range on the first
@@ -349,6 +355,10 @@ bool MemCtrlBase::remove_mmio_region(uint32_t start_addr, uint32_t size, MMIODev
         );
 
     return (found > 0);
+}
+
+bool MemCtrlBase::needs_swap_endian(bool is_mmio) {
+    return false;
 }
 
 AddressMapEntry* MemCtrlBase::find_rom_region()
