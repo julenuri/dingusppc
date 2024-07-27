@@ -193,7 +193,7 @@ void ViaCuda::write(int reg, uint8_t value) {
     case VIA_A:
     case VIA_ANH:
         this->via_porta = value;
-        LOG_F(WARNING, "Attempted write to VIA Port A!");
+        LOG_F(WARNING, "Attempted write to VIA Port A! (%x) (%08x)", value, ppc_state.pc);
         break;
     case VIA_DIRB:
         this->via_ddrb = value;
@@ -306,9 +306,12 @@ uint16_t ViaCuda::calc_counter_val(const uint16_t last_val, const uint64_t& last
 }
 
 void ViaCuda::print_enabled_ints() {
+    //return;
     const char* via_int_src[] = {"CA2", "CA1", "SR", "CB2", "CB1", "T2", "T1"};
 
     for (int i = 0; i < 7; i++) {
+        if (i == 2)
+            continue;
         if (this->_via_ier & (1 << i))
             LOG_F(INFO, "VIA %s interrupt enabled", via_int_src[i]);
     }
@@ -684,6 +687,9 @@ void ViaCuda::pseudo_command() {
             LOG_F(INFO, "Cuda: File server flag off");
             this->file_server = false;
         }
+        break;
+    case CUDA_SET_POWER_MESSAGES:
+        response_header(CUDA_PKT_PSEUDO, 0);
         break;
     case CUDA_SET_AUTOPOLL_RATE:
         this->poll_rate = this->in_buf[2];
