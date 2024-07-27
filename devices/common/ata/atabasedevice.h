@@ -41,7 +41,11 @@ public:
     ~AtaBaseDevice() = default;
 
     void set_host(IdeChannel* host, uint8_t dev_id) {
+<<<<<<< HEAD
         this->host_obj = host;
+=======
+        this->host_obj  = host;
+>>>>>>> ba281cd ([DEVICES] ATA devices upgrade and add debug info)
         this->my_dev_id = dev_id;
     };
 
