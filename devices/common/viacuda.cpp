@@ -669,9 +669,6 @@ void ViaCuda::pseudo_command() {
             this->file_server = false;
         }
         break;
-    case CUDA_SET_POWER_MESSAGES:
-        response_header(CUDA_PKT_PSEUDO, 0);
-        break;
     case CUDA_SET_AUTOPOLL_RATE:
         this->poll_rate = this->in_buf[2];
         LOG_F(INFO, "Cuda: autopoll rate set to %d ms", this->poll_rate);
