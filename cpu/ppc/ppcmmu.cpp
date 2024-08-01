@@ -1117,6 +1117,7 @@ inline T mmu_read_vmem(uint32_t guest_va)
             // refill the primary TLB
             *tlb1_entry = *tlb2_entry;
 
+            
             needs_swap = mem_ctrl_instance->needs_swap_endian(false);
             if (needs_swap) {
                 guest_va = mem_munge_address<T>(guest_va);
@@ -1312,11 +1313,10 @@ inline void mmu_write_vmem(uint32_t guest_va, T value)
                 munged ^= 1;
             }
 
-
             if (sizeof(T) == 8) {
                 if (guest_va & 3)
                     ppc_alignment_exception(guest_va);
-                   
+
                 uint32_t valueLow, valueHigh;
                 valueLow = value >> 32;
                 valueHigh = (uint32_t)value;
@@ -1431,23 +1431,23 @@ static T read_unaligned(uint32_t guest_va, uint8_t *host_va, bool needs_swap, bo
         unaligned_reads++;
 #endif
         switch(sizeof(T)) {
-            case 1:
-                return *host_va;
-            case 2:
-                return needs_swap ? (READ_WORD_LE_U(host_va)) : (READ_WORD_BE_U(host_va));
-            case 4:
-                return needs_swap ? (READ_DWORD_LE_U(host_va)) : (READ_DWORD_BE_U(host_va));
-            case 8:
-                return needs_swap ? (READ_QWORD_LE_U(host_va)) : (READ_QWORD_BE_U(host_va));
+        case 1:
+            return *host_va;
+        case 2:
+            return needs_swap ? (READ_WORD_LE_U(host_va)) : (READ_WORD_BE_U(host_va));
+        case 4:
+            return needs_swap ? (READ_DWORD_LE_U(host_va)) : (READ_DWORD_BE_U(host_va));
+        case 8:
+            return needs_swap ? (READ_QWORD_LE_U(host_va)) : (READ_QWORD_BE_U(host_va));
         }
     }
     return result;
 }
 
 // explicitely instantiate all required read_unaligned variants
-template uint16_t read_unaligned<uint16_t>(uint32_t guest_va, uint8_t *host_va, bool needs_swap, bool munged);
-template uint32_t read_unaligned<uint32_t>(uint32_t guest_va, uint8_t *host_va, bool needs_swap, bool munged);
-template uint64_t read_unaligned<uint64_t>(uint32_t guest_va, uint8_t *host_va, bool needs_swap, bool munged);
+template uint16_t read_unaligned<uint16_t>(uint32_t guest_va, uint8_t* host_va, bool needs_swap, bool munged);
+template uint32_t read_unaligned<uint32_t>(uint32_t guest_va, uint8_t* host_va, bool needs_swap, bool munged);
+template uint64_t read_unaligned<uint64_t>(uint32_t guest_va, uint8_t* host_va, bool needs_swap, bool munged);
 
 template <class T>
 static void write_unaligned(uint32_t guest_va, uint8_t *host_va, T value, bool needs_swap, bool munged)

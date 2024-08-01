@@ -71,7 +71,7 @@ private:
 
     // number of sectors for r/w multiple
     uint8_t multiple_sector_count = 0;
-    
+
     char * buffer = new char[1 <<17];
 
     //uint8_t hd_id_data[ATA_HD_SEC_SIZE] = {};

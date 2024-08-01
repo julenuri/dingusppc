@@ -133,6 +133,8 @@ ATIRage::ATIRage(uint16_t dev_id)
         this->notify_bar_change(bar_num);
     };
 
+    //this->attach_exp_rom_image(std::string("ati_oem_rage128pro_136_agp_full.rom"));
+
     // stuff default values into chip registers
     this->regs[ATI_CONFIG_CHIP_ID] = (asic_id << ATI_CFG_CHIP_MAJOR) | (dev_id << ATI_CFG_CHIP_TYPE);
 
@@ -578,7 +580,6 @@ bool ATIRage::pci_io_write(uint32_t offset, uint32_t value, uint32_t size) {
             BYTESWAP_SIZED(value, size),
             size);
     }
-
     this->write_reg(offset - this->aperture_base[1], BYTESWAP_SIZED(value, size), size);
     return true;
 }
@@ -594,7 +595,7 @@ uint32_t ATIRage::read(uint32_t rgn_start, uint32_t offset, int size)
         }
         //if (!bit_set(this->regs[ATI_BUS_CNTL], ATI_BUS_APER_REG_DIS)) {
             if (offset >= MM_REGS_0_OFF) { // memory-mapped registers, block 0
-               uint32_t value = BYTESWAP_SIZED(this->read_reg(offset & 0x3FF, size), size);
+                uint32_t value = BYTESWAP_SIZED(this->read_reg(offset & 0x3FF, size), size);
 
                 if ((offset & 0x3ff) < (ATI_GP_IO * 4) || (offset & 0x3ff) > (ATI_GP_IO * 4) + 4) {
                     LOG_F(INFO, "ATIRage Read: offset=%x, value=%x, size=%x", offset & 0x3FF, value, size);
@@ -635,15 +636,6 @@ uint32_t ATIRage::read(uint32_t rgn_start, uint32_t offset, int size)
             return read_mem(&this->exp_rom_data[offset], size);
         LOG_F(WARNING, "%s: read  unmapped ROM region %08x.%c",
             this->name.c_str(), offset, SIZE_ARG(size));
-        return 0;
-    }
-
-    // memory mapped expansion ROM region
-    if (rgn_start == this->exp_rom_addr) {
-        if (offset < this->exp_rom_size) {
-                LOG_F(INFO, "ATIRage: read opROM %08x.%c", offset, SIZE_ARG(size));
-                return read_mem(&this->exp_rom_data[offset], size);
-        }
         return 0;
     }
 
@@ -909,6 +901,7 @@ void ATIRage::crtc_update() {
     LOG_F(INFO, "VPLL frequency: %f MHz", vpll_freq * 1e-6);
     LOG_F(INFO, "Pixel (dot) clock: %f MHz", this->pixel_clock * 1e-6);
     LOG_F(INFO, "Refresh rate: %f Hz", this->refresh_rate);
+
     LOG_F(
         INFO,
         "Framebuffer offset: %x",
@@ -919,8 +912,6 @@ void ATIRage::crtc_update() {
         "Framebuffer pitch: %x (%x)",
         extract_bits<uint32_t>(this->regs[ATI_CRTC_OFF_PITCH], ATI_CRTC_PITCH, ATI_CRTC_PITCH_size),
         fb_pitch);
-
-
 
     this->stop_refresh_task();
     this->start_refresh_task();

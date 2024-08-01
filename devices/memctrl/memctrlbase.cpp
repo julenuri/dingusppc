@@ -169,11 +169,10 @@ bool MemCtrlBase::add_mem_region(uint32_t start_addr, uint32_t size,
     entry->type    = type;
     entry->devobj  = nullptr;
     entry->mem_ptr = reg_content;
-    
+
     if (align_val != 0) {
         reg_content = &reg_content[8 - align_val];
     }
-
     // Keep address_map sorted, that way the RAM region (which starts at 0 and
     // is most often requested) will be found by find_range on the first
     // iteration.

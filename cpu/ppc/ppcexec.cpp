@@ -398,7 +398,7 @@ static void ppc_exec_inner()
                 eb_start = ppc_next_instruction_address;
                 if (!(exec_flags & EXEF_RFI) && (eb_start & PPC_PAGE_MASK) == page_start) {
                     pc_real += (int)eb_start - (int)ppc_state.pc;
-                if (msr_le) pc_real = mmu_translate_imem(eb_start);
+                    if (msr_le) pc_real = mmu_translate_imem(eb_start);
                     ppc_set_cur_instruction(pc_real);
                 } else {
                     page_start = eb_start & PPC_PAGE_MASK;
@@ -465,7 +465,7 @@ static void ppc_exec_until_inner(const uint32_t goal_addr)
     uint8_t* pc_real;
 
     max_cycles = 0;
-    
+
     bool msr_le = (ppc_state.msr & MSR::LE) != 0;
 
     do {
@@ -491,6 +491,7 @@ static void ppc_exec_until_inner(const uint32_t goal_addr)
                 eb_start = ppc_next_instruction_address;
                 if (!(exec_flags & EXEF_RFI) && (eb_start & PPC_PAGE_MASK) == page_start) {
                     pc_real += (int)eb_start - (int)ppc_state.pc;
+                    if (msr_le) pc_real = mmu_translate_imem(eb_start);
                     ppc_set_cur_instruction(pc_real);
                 } else {
                     page_start = eb_start & PPC_PAGE_MASK;

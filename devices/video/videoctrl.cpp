@@ -350,7 +350,7 @@ void VideoCtrlBase::convert_frame_15bpp_BE(uint8_t *dst_buf, int dst_pitch)
     dst_pitch = dst_pitch - 4 * this->active_width;
 
     src_row = this->fb_ptr;
-    dst_row = dst_buf;
+    dst_row   = dst_buf;
     bool swap = needs_swap_endian(framebuffer_in_main_memory());
     for (int h = this->active_height; h > 0; h--) {
         for (int x = this->active_width; x > 0; x--) {
@@ -377,7 +377,7 @@ void VideoCtrlBase::convert_frame_16bpp(uint8_t *dst_buf, int dst_pitch)
     dst_pitch = dst_pitch - 4 * this->active_width;
 
     src_row = this->fb_ptr;
-    dst_row = dst_buf;
+    dst_row   = dst_buf;
     bool swap = needs_swap_endian(framebuffer_in_main_memory());
     for (int h = this->active_height; h > 0; h--) {
         for (int x = this->active_width; x > 0; x--) {
@@ -404,8 +404,7 @@ void VideoCtrlBase::convert_frame_24bpp(uint8_t *dst_buf, int dst_pitch)
     dst_pitch = dst_pitch - 4 * this->active_width;
 
     src_row = this->fb_ptr;
-    dst_row = dst_buf;
-    bool swap = needs_swap_endian(framebuffer_in_main_memory());
+    dst_row   = dst_buf;
     for (int h = this->active_height; h > 0; h--) {
         for (int x = this->active_width; x > 0; x--) {
             uint32_t c = ((src_row[0] << 16) | (src_row[1] << 8) | src_row[2]);
@@ -428,7 +427,7 @@ void VideoCtrlBase::convert_frame_32bpp(uint8_t *dst_buf, int dst_pitch)
     dst_pitch = dst_pitch - 4 * this->active_width;
 
     src_row = (uint32_t*)this->fb_ptr;
-    dst_row = (uint32_t*)dst_buf;
+    dst_row   = (uint32_t*)dst_buf;
     bool swap = needs_swap_endian(framebuffer_in_main_memory());
     for (int h = this->active_height; h > 0; h--) {
         for (int x = this->active_width; x > 0; x--) {
@@ -452,7 +451,7 @@ void VideoCtrlBase::convert_frame_32bpp_BE(uint8_t *dst_buf, int dst_pitch)
     dst_pitch = dst_pitch - 4 * this->active_width;
 
     src_row = (uint32_t*)this->fb_ptr;
-    dst_row = (uint32_t*)dst_buf;
+    dst_row   = (uint32_t*)dst_buf;
     bool swap = needs_swap_endian(framebuffer_in_main_memory());
     for (int h = this->active_height; h > 0; h--) {
         for (int x = this->active_width; x > 0; x--) {

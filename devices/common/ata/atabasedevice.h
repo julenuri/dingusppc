@@ -42,6 +42,7 @@ public:
 
     void set_host(IdeChannel* host, uint8_t dev_id) {
         this->host_obj = host;
+        this->my_dev_id = dev_id;
     };
 
     uint16_t read(const uint8_t reg_addr) override;

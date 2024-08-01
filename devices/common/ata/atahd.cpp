@@ -90,6 +90,7 @@ int AtaHardDisk::perform_command() {
     case ATAPI_SOFT_RESET: // for ATA devices, is a no-op
         this->r_status &= ~BSY;
         break;
+        
     case RECALIBRATE:
         this->r_error       = 0;
         this->r_cylinder_lo = 0;
@@ -135,6 +136,7 @@ int AtaHardDisk::perform_command() {
             this->cur_fpos = this->get_lba() * ATA_HD_SEC_SIZE;
             this->data_ptr = (uint16_t *)this->buffer;
             this->cur_data_ptr = this->data_ptr;
+
             uint32_t xfer_size = sec_count * ATA_HD_SEC_SIZE;
             uint32_t ints_size = ATA_HD_SEC_SIZE;
             if (this->r_command == WRITE_MULTIPLE) {

@@ -61,7 +61,7 @@ uint32_t HammerheadCtrl::read(uint32_t rgn_start, uint32_t offset, int size)
         result = HH_CPU_ID_TNT;
         break;
     case HammerheadReg::MOTHERBOARD_ID:
-        LOG_F(INFO, "Hammerhead: CPU_ID read");
+        LOG_F(INFO, "Hammerhead: MOTHERBOARD_ID read");
         result = (this->mb_id << 5) | (this->rom_type << 4);
         break;
     case HammerheadReg::CPU_SPEED:
@@ -112,19 +112,19 @@ void HammerheadCtrl::write(uint32_t rgn_start, uint32_t offset, uint32_t value, 
 
     switch (offset) {
     case HammerheadReg::MEM_TIMING_0:
-        LOG_F(INFO, "%s: MEM_TIMING_0 set to 0x%X", this->name.c_str(), value);
+        LOG_F(9, "%s: MEM_TIMING_0 set to 0x%X", this->name.c_str(), value);
         break;
     case HammerheadReg::MEM_TIMING_1:
-        LOG_F(INFO, "%s: MEM_TIMING_1 set to 0x%X", this->name.c_str(), value);
+        LOG_F(9, "%s: MEM_TIMING_1 set to 0x%X", this->name.c_str(), value);
         break;
     case HammerheadReg::REFRESH_TIMING:
-        LOG_F(INFO, "%s: REFRESH_TIMING set to 0x%X", this->name.c_str(), value);
+        LOG_F(9, "%s: REFRESH_TIMING set to 0x%X", this->name.c_str(), value);
         break;
     case HammerheadReg::ROM_TIMING:
-        LOG_F(INFO, "%s: ROM_TIMING set to 0x%X", this->name.c_str(), value);
+        LOG_F(9, "%s: ROM_TIMING set to 0x%X", this->name.c_str(), value);
         break;
     case HammerheadReg::ARBITER_CONFIG:
-        LOG_F(INFO, "Hammerhead: ARBITER_CONFIG set to 0x%X", this->name.c_str(), value);
+        LOG_F(9, "%s: ARBITER_CONFIG set to 0x%X", this->name.c_str(), value);
         this->arb_config = value;
         break;
     default:

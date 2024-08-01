@@ -227,7 +227,6 @@ void AtapiCdrom::perform_packet_command() {
             break;
         }
 
-
         if (this->r_features & ATAPI_Features::DMA) {
             LOG_F(WARNING, "ATAPI DMA transfer requsted");
         }

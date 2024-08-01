@@ -185,7 +185,6 @@ enum {
     EXEF_BRANCH    = 1 << 0,
     EXEF_EXCEPTION = 1 << 1,
     EXEF_RFI       = 1 << 2,
-    EXEF_TIMER     = 1 << 7,
 };
 
 enum CR_select : int32_t {

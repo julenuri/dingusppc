@@ -590,17 +590,7 @@ uint32_t AtiMach64Gx::read(uint32_t rgn_start, uint32_t offset, int size)
             return read_mem(&this->vram_ptr[offset], size);
         }
         if (offset >= this->mm_regs_offset && offset < this->mm_regs_offset + 0x400) {
-            //LOG_F(INFO, "ATIMach64 Write: offset=%x, value=%x, size=%x", offset - mm_regs_offset, BYTESWAP_SIZED(value, size), size);
-            uint32_t value = read_reg(offset - this->mm_regs_offset, size);
-            #if 0
-            LOG_F(
-                INFO,
-                "ATIMach64 Read: offset=%x, value=%x, size=%x",
-                offset - mm_regs_offset,
-                BYTESWAP_SIZED(value, size),
-                size);
-            #endif
-            return BYTESWAP_SIZED(value, size);
+            return BYTESWAP_SIZED(read_reg(offset - this->mm_regs_offset, size), size);
         }
         return 0;
     }
@@ -880,10 +870,9 @@ int AtiMach64Gx::device_postinit()
 #endif
             0;
 
-        LOG_F(WARNING, "%s: irq_line_state:%d do_interrupt:%d CRTC_INT_CNTL:%08x",
-        //LOG_F(WARNING, "%s: irq_line_state:%d do_interrupt:%d CRTC_INT_CNTL:%08x", this->name.c_str(), irq_line_state, do_interrupt, this->regs[ATI_CRTC_INT_CNTL]);
-              this->name.c_str(), irq_line_state, do_interrupt,
-              this->regs[ATI_CRTC_INT_CNTL]);
+        //LOG_F(WARNING, "%s: irq_line_state:%d do_interrupt:%d CRTC_INT_CNTL:%08x",
+        //      this->name.c_str(), irq_line_state, do_interrupt,
+        //      this->regs[ATI_CRTC_INT_CNTL]);
 
         if (do_interrupt) {
             this->pci_interrupt(irq_line_state);
