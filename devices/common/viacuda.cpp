@@ -399,11 +399,7 @@ void ViaCuda::write(uint8_t new_state) {
 
     if (new_tip) {
         if (new_byteack) {
-<<<<<<< HEAD
             this->via_portb |= CUDA_TREQ; // negate TREQ
-=======
-            this->via_regs[VIA_B] |= CUDA_TREQ;    // negate TREQ
->>>>>>> b700f27 ([ALL] fix some errors in the rebase pulling the Roytam repo)
             this->treq = 1;
 
             if (this->in_count) {
